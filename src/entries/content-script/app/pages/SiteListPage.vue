@@ -7,7 +7,6 @@ import { useRuntimeStore } from "@/options/stores/runtime.ts";
 import { useMetadataStore } from "@/options/stores/metadata.ts";
 import { doKeywordSearch, siteInstance } from "../utils.ts";
 
-import SentToDownloaderDialog from "@/options/views/Overview/SearchEntity/SentToDownloaderDialog.vue";
 import AdvanceListModuleDialog from "@/content-script/app/components/AdvanceListModuleDialog.vue";
 import SpeedDialBtn from "@/content-script/app/components/SpeedDialBtn.vue";
 
@@ -15,7 +14,8 @@ const metadataStore = useMetadataStore();
 const runtimeStore = useRuntimeStore();
 
 async function parseListPage(showNoTorrentError = true) {
-  const parsedResult = await siteInstance.value?.transformListPage(document);
+  // 使用克隆的文档，避免污染原始文档
+  const parsedResult = await siteInstance.value?.transformListPage(document.cloneNode(true) as Document);
 
   let errorMessage = "";
   if ((parsedResult?.torrents ?? []).length === 0) {
